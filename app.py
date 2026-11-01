@@ -79,6 +79,7 @@ with st.sidebar:
                     extracted_text = uploaded_file.read().decode("utf-8")
                 elif file_extension == "pdf":
                     reader = PdfReader(uploaded_file)
+                    # Giới hạn chỉ quét tối đa 15 trang đầu tiên để tăng tốc độ xử lý tức thì cho file nặng
                     max_pages = min(len(reader.pages), 15)
                     for i in range(max_pages):
                         text = reader.pages[i].extract_text()
@@ -89,6 +90,7 @@ with st.sidebar:
                     for para in doc.paragraphs:
                         extracted_text += para.text + "\n"
                 
+                # Cắt giới hạn tối ưu 12.000 ký tự quan trọng nhất giúp AI phản hồi cực kỳ nhanh
                 project_text = extracted_text[:12000]
                 st.success(f"🌱 Đã tối ưu & nạp dữ liệu: **{uploaded_file.name}**")
             except Exception as e:
@@ -105,7 +107,7 @@ with st.sidebar:
 
 # --- MAIN CONTENT: GIAO DIỆN CHÍNH ---
 st.markdown('<p class="main-title">🌍 AI Phân Tích Dự Án Môi Trường</p>', unsafe_allow_html=True)
-st.markdown('<p class="sub-title">Trợ lý trí tuệ nhân tạo tốc độ cao hỗ trợ <b>Đánh giá Tác động Môi trường & Xã hội (ĐTM-ĐTXH)</b>.</p>', unsafe_allow_html=True)
+st.markdown('<p class="sub-title">Trợ lý trí tuệ nhân tạo tốc độ cao hỗ trợ <b>Đánh giá Tác động Môi trường (ĐTM)</b> và chiến lược phát triển xanh.</p>', unsafe_allow_html=True)
 st.markdown("---")
 
 if analyze_button:
@@ -116,25 +118,16 @@ if analyze_button:
     else:
         try:
             genai.configure(api_key=api_key)
+            # Sử dụng model tối ưu hiệu suất nhanh
             model = genai.GenerativeModel('gemini-3.8-flash')
             
             prompt = """
-Bạn là một chuyên gia hàng đầu về Đánh giá Tác động Môi trường và Xã hội (ĐTM-ĐTXH). Hãy phân tích nhanh văn bản dự án dưới đây và trả về kết quả bằng tiếng Việt, rõ ràng, chuyên nghiệp theo cấu trúc:
+Bạn là một chuyên gia hàng đầu về Đánh giá Tác động Môi trường (ĐTM). Hãy phân tích nhanh văn bản dự án dưới đây và trả về kết quả bằng tiếng Việt, rõ ràng, chuyên nghiệp theo cấu trúc:
 
-1. Tóm tắt tổng quan dự án
-- Tên dự án (nếu có), mục tiêu chính, quy mô, công nghệ áp dụng và vị trí triển khai.
-
-2. Đánh giá tác động môi trường & xã hội (ĐTM - ĐTXH)
-- Phân tích chi tiết các tác động tích cực và tiêu cực đối với:
-  + Không khí (khí thải, bụi, tiếng ồn, nhiệt độ...)
-  + Nguồn nước (nước mặt, nước ngầm, lưu lượng, xử lý nước thải...)
-  + Đất đai (sử dụng đất, xói mòn, nguy cơ ô nhiễm đất...)
-  + Hệ sinh thái & Đa dạng sinh học (ảnh hưởng đến động thực vật, cảnh quan tự nhiên...)
-  + Tác động đến xã hội (đời sống cộng đồng dân cư, việc làm, an sinh xã hội, y tế, văn hóa và hạ tầng khu vực...)
-
-3. Giải pháp & Khuyến nghị phát triển bền vững
-- Các giải pháp kỹ thuật và quản lý nhằm giảm thiểu tác động tiêu cực đến môi trường và xã hội.
-- Đề xuất cải tiến công nghệ, tiết kiệm năng lượng, áp dụng mô hình kinh tế tuần hoàn hoặc bù đắp sinh thái.
+1. Tóm tắt tổng quan dự án (Mục tiêu, quy mô, công nghệ, vị trí)
+2. Đánh giá tác động môi trường (Không khí, Nguồn nước, Đất đai, Hệ sinh thái)
+3. Giải pháp & Khuyến nghị phát triển bền vững (Giảm thiểu tác động, kinh tế tuần hoàn)
+4. Điểm số thân thiện môi trường (Sustainability Score từ 1-10 kèm lý do ngắn gọn)
 
 Nội dung dự án:
 {project_text}
@@ -145,7 +138,7 @@ Nội dung dự án:
                 analysis_result = response.text
             
             st.success("🎉 Phân tích hoàn tất thành công!")
-            st.markdown("### 📊 Báo Cáo Đánh Giá Tác Động Môi Trường & Xã Hội")
+            st.markdown("### 📊 Báo Cáo Đánh Giá Tác Động Môi Trường")
             
             with st.container(border=True):
                 st.markdown(analysis_result)
@@ -160,14 +153,15 @@ else:
             st.markdown("### ⚡ Chế Độ Tốc Độ Cao")
             st.markdown("""
             * Hệ thống tự động trích xuất các phần trọng yếu của tài liệu để tiết kiệm thời gian truyền tải.
-            * Phản hồi nhanh chóng khi sử dụng nội dung nhập trực tiếp.
+            * Phản hồi gần như tức thì khi sử dụng nội dung nhập trực tiếp.
             """)
             
     with col2:
         with st.container(border=True):
-            st.markdown("### 🎯 Tiêu Chí Đánh Giá Mới")
+            st.markdown("### 🎯 Tiêu Chí Đánh Giá")
             st.markdown("""
             * **Tổng quan dự án**
-            * **ĐTM & Tác động xã hội** (Môi trường sống, cộng đồng dân cư, việc làm)
-            * **Giải pháp xanh & Phát triển bền vững**
+            * **ĐTM đa chiều** (Không khí, Nước, Đất, Sinh thái)
+            * **Giải pháp xanh**
+            * **Sustainability Score** (1-10 điểm)
             """)
