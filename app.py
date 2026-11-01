@@ -1,4 +1,4 @@
-﻿import os
+﻿import os
 import streamlit as st
 import google.generativeai as genai
 from pypdf import PdfReader
@@ -70,7 +70,6 @@ analyze_button = st.sidebar.button("🔍 Phân tích dự án", type="primary")
 
 # --- MAIN CONTENT: XỬ LÝ & HIỂN THỊ KẾT QUẢ ---
 if analyze_button:
-    # Xác định API Key cuối cùng được sử dụng
     active_api_key = api_key_input if api_key_input else api_key_env
     
     if not active_api_key:
@@ -79,13 +78,9 @@ if analyze_button:
         st.warning("⚠️ Vui lòng tải lên tài liệu hoặc nhập nội dung mô tả dự án trước khi tiến hành phân tích.")
     else:
         try:
-            # Cấu hình Gemini API
             genai.configure(api_key=active_api_key)
-            
-            # Khởi tạo mô hình Gemini ổn định
             model = genai.GenerativeModel('gemini-1.5-flash')
             
-            # Xây dựng prompt chuyên gia
             prompt = f"""
 Bạn là một chuyên gia hàng đầu về Đánh giá Tác động Môi trường (ĐTM) và Phát triển Bền vững. 
 Hãy phân tích tài liệu/văn bản mô tả dự án dưới đây và trả về kết quả bằng tiếng Việt, được định dạng rõ ràng, chuyên nghiệp theo cấu trúc sau:
