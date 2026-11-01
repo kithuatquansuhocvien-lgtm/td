@@ -80,8 +80,8 @@ if analyze_button:
         try:
             genai.configure(api_key=active_api_key)
             
-            # Sử dụng model chuẩn tương thích với phiên bản mới
-            model = genai.GenerativeModel('gemini-2.5-flash')
+            # Cập nhật sử dụng model mới theo thông báo từ Google
+            model = genai.GenerativeModel('gemini-3.8-flash')
             
             prompt = f"""
 Bạn là một chuyên gia hàng đầu về Đánh giá Tác động Môi trường (ĐTM) và Phát triển Bền vững. 
