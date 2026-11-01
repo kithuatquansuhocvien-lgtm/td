@@ -1,4 +1,4 @@
-﻿import os
+﻿import os
 import streamlit as st
 import google.generativeai as genai
 from pypdf import PdfReader
@@ -79,7 +79,6 @@ with st.sidebar:
                     extracted_text = uploaded_file.read().decode("utf-8")
                 elif file_extension == "pdf":
                     reader = PdfReader(uploaded_file)
-                    # Quét tối đa 15 trang đầu tiên để tối ưu tốc độ xử lý
                     max_pages = min(len(reader.pages), 15)
                     for i in range(max_pages):
                         text = reader.pages[i].extract_text()
@@ -117,8 +116,8 @@ if analyze_button:
     else:
         try:
             genai.configure(api_key=api_key)
-            # Sử dụng model chuẩn gemini-1.5-flash ổn định cao
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            # Giữ nguyên model mà bạn đang sử dụng
+            model = genai.GenerativeModel('gemini-3.8-flash')
             
             prompt = """
 Bạn là một chuyên gia hàng đầu về Đánh giá Tác động Môi trường và Xã hội (ĐTM-ĐTXH). Hãy phân tích nhanh văn bản dự án dưới đây và trả về kết quả bằng tiếng Việt, rõ ràng, chuyên nghiệp theo cấu trúc:
