@@ -6,8 +6,8 @@ from docx import Document
 
 # Cấu hình giao diện trang Streamlit (Wide mode)
 st.set_page_config(
-    page_title="AI Phân Tích Dự Án Môi Trường",
-    page_icon="🌍",
+    page_title="AI Phân Tích Địa Chất Và Môi Trường",
+    page_icon="⛏️",
     layout="wide"
 )
 
@@ -18,7 +18,7 @@ st.markdown("""
         background: linear-gradient(to bottom right, #f4fbf7, #eef6fc);
     }
     .main-title {
-        font-size: 2.5rem;
+        font-size: 2.3rem;
         color: #0b6623;
         font-weight: 800;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
@@ -59,7 +59,7 @@ except Exception:
 
 # --- SIDEBAR: KHU VỰC ĐẦU VÀO ---
 with st.sidebar:
-    st.markdown("### 🌿 Cổng Điều Hướng Dữ Liệu")
+    st.markdown("### ⛏️ Cổng Điều Hướng Dữ Liệu")
     st.markdown("---")
     
     input_method = st.radio(
@@ -97,15 +97,15 @@ with st.sidebar:
         project_text = st.text_area(
             "Nhập mô tả chi tiết dự án:",
             height=250,
-            placeholder="Nhập thông tin về quy mô, công nghệ, vị trí, nguyên nhiên liệu..."
+            placeholder="Nhập thông tin về địa hình, cấu trúc địa chất, quy mô, công nghệ..."
         )
     
     st.markdown("---")
     analyze_button = st.button("🚀 Phân Tích Siêu Tốc", use_container_width=True)
 
 # --- MAIN CONTENT: GIAO DIỆN CHÍNH ---
-st.markdown('<p class="main-title">🌍 AI Phân Tích Dự Án Môi Trường</p>', unsafe_allow_html=True)
-st.markdown('<p class="sub-title">Trợ lý trí tuệ nhân tạo tốc độ cao hỗ trợ <b>Đánh giá Tác động Môi trường & Xã hội (ĐTM-ĐTXH)</b>.</p>', unsafe_allow_html=True)
+st.markdown('<p class="main-title">⛏️ AI Phân Tích Địa Chất Và Môi Trường</p>', unsafe_allow_html=True)
+st.markdown('<p class="sub-title">Trợ lý trí tuệ nhân tạo chuyên sâu hỗ trợ phân tích cấu trúc <b>Địa chất, Tác động Môi trường & Xã hội</b>.</p>', unsafe_allow_html=True)
 st.markdown("---")
 
 if analyze_button:
@@ -116,36 +116,34 @@ if analyze_button:
     else:
         try:
             genai.configure(api_key=api_key)
-            model = genai.GenerativeModel('gemini-3.8-flash')
+            model = genai.GenerativeModel('gemini-1.5-flash')
             
             prompt = """
-Bạn là một chuyên gia hàng đầu về Đánh giá Tác động Môi trường và Xã hội (ĐTM-ĐTXH). Hãy phân tích nhanh văn bản dự án dưới đây và trả về kết quả bằng tiếng Việt, rõ ràng, chuyên nghiệp theo cấu trúc:
+Bạn là một chuyên gia hàng đầu về Khảo sát Địa chất, Đánh giá Tác động Môi trường và Xã hội (ĐTM-ĐTXH). Hãy phân tích nhanh văn bản dự án dưới đây và trả về kết quả bằng tiếng Việt, rõ ràng, chuyên nghiệp theo cấu trúc:
 
-1. Tóm tắt tổng quan dự án
-- Tên dự án (nếu có), mục tiêu chính, quy mô, công nghệ áp dụng và vị trí triển khai.
+1. Tóm tắt tổng quan dự án & Điều kiện địa hình
+- Tên dự án, mục tiêu, quy mô, vị trí và đặc điểm tổng quan về hình thái địa hình khu vực.
 
-2. Đánh giá tác động môi trường & xã hội (ĐTM - ĐTXH)
-- Phân tích chi tiết các tác động tích cực và tiêu cực đối với:
-  + Không khí (khí thải, bụi, tiếng ồn, nhiệt độ...)
-  + Nguồn nước (nước mặt, nước ngầm, lưu lượng, xử lý nước thải...)
-  + Đất đai (sử dụng đất, xói mòn, nguy cơ ô nhiễm đất...)
-  + Hệ sinh thái & Đa dạng sinh học (ảnh hưởng đến động thực vật, cảnh quan tự nhiên...)
-  + Tác động đến xã hội (đời sống cộng đồng dân cư, việc làm, an sinh xã hội, y tế, văn hóa và hạ tầng khu vực...)
+2. Phân tích chuyên sâu Địa chất, Môi trường & Xã hội
+- Phân tích chi tiết các yếu tố:
+  + Điều kiện địa chất & nền móng (Cấu trúc tầng đất đá, tính ổn định nền đất, nguy cơ sụt lún, sạt lở hoặc đứt gãy kiến tạo nếu có).
+  + Môi trường tự nhiên (Tác động đến không khí, nguồn nước mặt/ngầm, đất đai và hệ sinh thái).
+  + Tác động xã hội (Đời sống cộng đồng dân cư, tái định cư, việc làm, an sinh và hạ tầng khu vực).
 
-3. Giải pháp & Khuyến nghị phát triển bền vững
-- Các giải pháp kỹ thuật và quản lý nhằm giảm thiểu tác động tiêu cực đến môi trường và xã hội.
-- Đề xuất cải tiến công nghệ, tiết kiệm năng lượng, áp dụng mô hình kinh tế tuần hoàn hoặc bù đắp sinh thái.
+3. Giải pháp kỹ thuật & Khuyến nghị phát triển bền vững
+- Các giải pháp xử lý nền móng, gia cố địa chất và công nghệ giảm thiểu ô nhiễm môi trường.
+- Khuyến nghị quản lý rủi ro thiên tai (sạt lở, ngập úng) và phát triển kinh tế tuần hoàn.
 
 Nội dung dự án:
 {project_text}
 """.format(project_text=project_text)
             
-            with st.spinner("⚡ AI đang tiến hành phân tích siêu tốc, vui lòng đợi trong giây lát..."):
+            with st.spinner("⚡ AI đang tiến hành phân tích địa chất và môi trường siêu tốc, vui lòng đợi trong giây lát..."):
                 response = model.generate_content(prompt)
                 analysis_result = response.text
             
             st.success("🎉 Phân tích hoàn tất thành công!")
-            st.markdown("### 📊 Báo Cáo Đánh Giá Tác Động Môi Trường & Xã Hội")
+            st.markdown("### 📊 Báo Cáo Phân Tích Địa Chất, Môi Trường & Xã Hội")
             
             with st.container(border=True):
                 st.markdown(analysis_result)
@@ -159,15 +157,15 @@ else:
         with st.container(border=True):
             st.markdown("### ⚡ Chế Độ Tốc Độ Cao")
             st.markdown("""
-            * Hệ thống tự động trích xuất các phần trọng yếu của tài liệu để tiết kiệm thời gian truyền tải.
-            * Phản hồi nhanh chóng khi sử dụng nội dung nhập trực tiếp.
+            * Hệ thống tự động trích xuất các thông số trọng yếu về địa chất và tài liệu kỹ thuật.
+            * Phản hồi nhanh chóng khi sử dụng nội dung nhập trực tiếp từ bản vẽ hoặc báo cáo.
             """)
             
     with col2:
         with st.container(border=True):
-            st.markdown("### 🎯 Tiêu Chí Đánh Giá Mới")
+            st.markdown("### 🎯 Tiêu Chí Đánh Giá Chuyên Ngành")
             st.markdown("""
-            * **Tổng quan dự án**
-            * **ĐTM & Tác động xã hội** (Môi trường sống, cộng đồng dân cư, việc làm)
-            * **Giải pháp xanh & Phát triển bền vững**
-            """)
+            * **Tổng quan dự án & Địa hình**
+            * **Địa chất & Nền móng** (Độ ổn định tầng đất đá, rủi ro sụt lún, sạt lở)[cite: 10]
+            * **Môi trường & Xã hội** (Không khí, nguồn nước, sinh thái, đời sống dân sinh)[cite: 10]
+            * **Giải pháp kỹ thuật & Bền vững**
