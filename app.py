@@ -117,7 +117,8 @@ if analyze_button:
     else:
         try:
             genai.configure(api_key=api_key)
-            model = genai.GenerativeModel('gemini-3.8-flash')
+            # Sử dụng model chuẩn gemini-1.5-flash ổn định cao
+            model = genai.GenerativeModel('gemini-1.5-flash')
             
             prompt = """
 Bạn là một chuyên gia hàng đầu về Đánh giá Tác động Môi trường và Xã hội (ĐTM-ĐTXH). Hãy phân tích nhanh văn bản dự án dưới đây và trả về kết quả bằng tiếng Việt, rõ ràng, chuyên nghiệp theo cấu trúc:
@@ -158,10 +159,10 @@ else:
     
     with col1:
         with st.container(border=True):
-            st.markdown("### ⚡ Chế Độ Tốc Độ Cao")
+            st.markdown("### 🤖 Giới thiệu Trợ lý AI")
             st.markdown("""
-            * Hệ thống tự động trích xuất các phần trọng yếu của tài liệu để tiết kiệm thời gian truyền tải.
-            * Phản hồi nhanh chóng khi sử dụng nội dung nhập trực tiếp.
+            * **Năng lực chuyên gia:** Được tích hợp tri thức chuyên sâu về Đánh giá Tác động Môi trường và Xã hội (ĐTM-ĐTXH).
+            * **Công nghệ tiên tiến:** Vận hành trên nền tảng Google Gemini API với khả năng đọc hiểu tài liệu kỹ thuật phức tạp và phản hồi siêu tốc.
             """)
             
     with col2:
