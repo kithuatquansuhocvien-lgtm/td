@@ -90,27 +90,4 @@ with st.sidebar:
     st.markdown("---")
     analyze_button = st.button("🚀 Bắt đầu Phân Tích", type="primary")
 
-# --- MAIN CONTENT: HIỂN THỊ CHÍNH ---
-st.markdown('<p class="main-header">🌍 AI Phân Tích Dự Án Môi Trường</p>', unsafe_allow_html=True)
-st.markdown('<p class="sub-header">Hệ thống trợ lý thông minh hỗ trợ Đánh giá Tác động Môi trường (ĐTM) và Phát triển Bền vững dựa trên Google Gemini AI.</p>', unsafe_allow_html=True)
-
-if analyze_button:
-    if not api_key:
-        st.error("⚠️ Chưa cấu hình `GEMINI_API_KEY` trong Streamlit Secrets! Vui lòng vào phần Settings -> Secrets trên Streamlit Cloud để thiết lập.")
-    elif not project_text.strip():
-        st.warning("⚠️ Vui lòng tải lên tài liệu hoặc nhập nội dung mô tả dự án trước khi tiến hành phân tích.")
-    else:
-        try:
-            genai.configure(api_key=api_key)
-            model = genai.GenerativeModel('gemini-3.8-flash')
-            
-            prompt = f"""
-Bạn là một chuyên gia hàng đầu về Đánh giá Tác động Môi trường (ĐTM) và Phát triển Bền vững. 
-Hãy phân tích tài liệu/văn bản mô tả dự án dưới đây và trả về kết quả bằng tiếng Việt, được định dạng rõ ràng, chuyên nghiệp theo cấu trúc sau:
-
-1. Tóm tắt tổng quan dự án
-- Tên dự án (nếu có), mục tiêu chính, quy mô, công nghệ áp dụng và vị trí triển khai.
-
-2. Đánh giá tác động môi trường (ĐTM)
-- Phân tích chi tiết các tác động tích cực và tiêu cực đối với:
-  + Không khí (khí thải, bụi, tiếng ồn, nhiệt độ...)
+# --- MAIN CONTENT: HIỂN THỊ
