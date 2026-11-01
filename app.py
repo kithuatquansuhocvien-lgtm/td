@@ -116,7 +116,8 @@ if analyze_button:
     else:
         try:
             genai.configure(api_key=api_key)
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            # Sử dụng model chuẩn tương thích với phiên bản mới nhất hiện tại
+            model = genai.GenerativeModel('gemini-flash')
             
             prompt = """
 Bạn là một chuyên gia hàng đầu về Khảo sát Địa chất, Đánh giá Tác động Môi trường và Xã hội (ĐTM-ĐTXH). Hãy phân tích nhanh văn bản dự án dưới đây và trả về kết quả bằng tiếng Việt, rõ ràng, chuyên nghiệp theo cấu trúc:
