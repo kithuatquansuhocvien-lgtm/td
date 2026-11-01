@@ -79,7 +79,6 @@ with st.sidebar:
                     extracted_text = uploaded_file.read().decode("utf-8")
                 elif file_extension == "pdf":
                     reader = PdfReader(uploaded_file)
-                    # Quét tối đa 15 trang đầu tiên để tối ưu tốc độ xử lý
                     max_pages = min(len(reader.pages), 15)
                     for i in range(max_pages):
                         text = reader.pages[i].extract_text()
