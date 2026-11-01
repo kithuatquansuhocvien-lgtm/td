@@ -15,22 +15,15 @@ st.set_page_config(
 st.title("🌍 AI Phân Tích Dự Án Môi Trường")
 st.markdown("Ứng dụng sử dụng trí tuệ nhân tạo **Google Gemini** để phân tích, đánh giá tác động môi trường (ĐTM) và đề xuất các giải pháp phát triển bền vững cho dự án.")
 
-# --- SIDEBAR: CẤU HÌNH & NHẬP LIỆU ---
-st.sidebar.header("⚙️ Cấu hình & Dữ liệu")
+# --- KIỂM TRA API KEY TỪ SECRETS ---
+try:
+    api_key = st.secrets["GEMINI_API_KEY"]
+except Exception:
+    api_key = ""
 
-# 1. Cấu hình API Key
-api_key_env = st.secrets.get("GEMINI_API_KEY", "") if "GEMINI_API_KEY" in st.secrets else ""
-api_key_input = st.sidebar.text_input(
-    "Nhập Google Gemini API Key",
-    value=api_key_env,
-    type="password",
-    help="Lấy API Key từ Google AI Studio. Nếu đã cấu hình trong Streamlit Secrets, bạn có thể để trống."
-)
+# --- SIDEBAR: NHẬP LIỆU DỰ ÁN ---
+st.sidebar.header("📂 Dữ liệu dự án")
 
-st.sidebar.divider()
-
-# 2. Phương thức nhập liệu
-st.sidebar.subheader("📂 Phương thức nhập liệu")
 input_method = st.sidebar.radio(
     "Chọn cách cung cấp thông tin dự án:",
     ("Tải lên file (PDF, DOCX, TXT)", "Nhập văn bản trực tiếp")
@@ -70,17 +63,15 @@ analyze_button = st.sidebar.button("🔍 Phân tích dự án", type="primary")
 
 # --- MAIN CONTENT: XỬ LÝ & HIỂN THỊ KẾT QUẢ ---
 if analyze_button:
-    active_api_key = api_key_input if api_key_input else api_key_env
-    
-    if not active_api_key:
-        st.error("⚠️ Vui lòng cung cấp Google Gemini API Key (nhập trực tiếp ở sidebar hoặc cấu hình trong Secrets)!")
+    if not api_key:
+        st.error("⚠️ Chưa cấu hình `GEMINI_API_KEY` trong Streamlit Secrets! Vui lòng vào phần Settings -> Secrets trên Streamlit Cloud để thiết lập.")
     elif not project_text.strip():
         st.warning("⚠️ Vui lòng tải lên tài liệu hoặc nhập nội dung mô tả dự án trước khi tiến hành phân tích.")
     else:
         try:
-            genai.configure(api_key=active_api_key)
+            genai.configure(api_key=api_key)
             
-            # Cập nhật sử dụng model mới theo thông báo từ Google
+            # Sử dụng model chuẩn tương thích mới nhất
             model = genai.GenerativeModel('gemini-3.8-flash')
             
             prompt = f"""
@@ -121,4 +112,4 @@ Nội dung dự án cần phân tích:
         except Exception as e:
             st.error(f"❌ Đã xảy ra lỗi khi gọi Gemini API hoặc xử lý dữ liệu: {e}")
 else:
-    st.info("👈 Hãy nhập API Key và cung cấp thông tin dự án ở thanh bên trái (Sidebar), sau đó nhấn nút **'Phân tích dự án'** để bắt đầu.")
+    st.info("👈 Hãy cung cấp thông tin dự án ở thanh bên trái (Sidebar), sau đó nhấn nút **'Phân tích dự án'** để bắt đầu.")
