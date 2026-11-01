@@ -11,6 +11,55 @@ st.set_page_config(
     layout="wide"
 )
 
+# --- TÙY CHỈNH GIAO DIỆN (CSS) ĐẶC SẮC & SINH ĐỘNG ---
+st.markdown("""
+    <style>
+    /* Màu nền chính và font chữ */
+    .stApp {
+        background: linear-gradient(to bottom right, #f4fbf7, #eef6fc);
+    }
+    
+    /* Tiêu đề chính rực rỡ */
+    .main-title {
+        font-size: 2.5rem;
+        color: #0b6623;
+        font-weight: 800;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        margin-bottom: 0px;
+    }
+    
+    .sub-title {
+        font-size: 1.1rem;
+        color: #374151;
+        font-weight: 500;
+        margin-bottom: 20px;
+    }
+
+    /* Style cho Sidebar */
+    [data-testid="stSidebar"] {
+        background-color: #f0fdf4;
+        border-right: 2px solid #bbf7d0;
+    }
+    
+    /* Nút bấm tùy chỉnh bắt mắt */
+    .stButton>button {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        border-radius: 10px;
+        font-weight: 700;
+        border: none;
+        box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .stButton>button:hover {
+        background: linear-gradient(135deg, #059669, #047857);
+        box-shadow: 0 6px 8px -1px rgba(16, 185, 129, 0.4);
+        color: white;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # --- KIỂM TRA API KEY TỪ SECRETS ---
 try:
     api_key = st.secrets["GEMINI_API_KEY"]
@@ -19,7 +68,7 @@ except Exception:
 
 # --- SIDEBAR: KHU VỰC ĐẦU VÀO ---
 with st.sidebar:
-    st.markdown("### ⚙️ Điều Khiển & Dữ Liệu")
+    st.markdown("### 🌿 Cổng Điều Hướng Dữ Liệu")
     st.markdown("---")
     
     input_method = st.radio(
@@ -34,22 +83,25 @@ with st.sidebar:
         if uploaded_file is not None:
             try:
                 file_extension = uploaded_file.name.split(".")[-1].lower()
+                extracted_text = ""
                 if file_extension == "txt":
-                    project_text = uploaded_file.read().decode("utf-8")
+                    extracted_text = uploaded_file.read().decode("utf-8")
                 elif file_extension == "pdf":
                     reader = PdfReader(uploaded_file)
-                    for page in reader.pages:
-                        text = page.extract_text()
+                    max_pages = min(len(reader.pages), 30) # Tối ưu tốc độ đọc tối đa 30 trang đầu
+                    for i in range(max_pages):
+                        text = reader.pages[i].extract_text()
                         if text:
-                            project_text += text + "\n"
+                            extracted_text += text + "\n"
                 elif file_extension == "docx":
                     doc = Document(uploaded_file)
                     for para in doc.paragraphs:
-                        project_text += para.text + "\n"
+                        extracted_text += para.text + "\n"
                 
-                st.success(f"Đã đọc file thành công: **{uploaded_file.name}**")
+                project_text = extracted_text[:20000] # Giới hạn tối ưu thông minh
+                st.success(f"🌱 Đã nạp dữ liệu: **{uploaded_file.name}**")
             except Exception as e:
-                st.error(f"Lỗi khi đọc file: {e}")
+                st.error(f"❌ Lỗi khi đọc file: {e}")
     else:
         project_text = st.text_area(
             "Nhập mô tả chi tiết dự án:",
@@ -58,11 +110,11 @@ with st.sidebar:
         )
     
     st.markdown("---")
-    analyze_button = st.button("🚀 Bắt đầu Phân Tích Dự Án", type="primary", use_container_width=True)
+    analyze_button = st.button("🚀 Kích Hoạt Phân Tích AI", use_container_width=True)
 
 # --- MAIN CONTENT: GIAO DIỆN CHÍNH ---
-st.title("🌍 AI Phân Tích Dự Án Môi Trường")
-st.markdown("Hệ thống trợ lý thông minh hỗ trợ **Đánh giá Tác động Môi trường (ĐTM)** và đề xuất giải pháp phát triển bền vững dựa trên **Google Gemini AI**.")
+st.markdown('<p class="main-title">🌍 AI Phân Tích Dự Án Môi Trường</p>', unsafe_allow_html=True)
+st.markdown('<p class="sub-title">Trợ lý trí tuệ nhân tạo chuyên sâu hỗ trợ <b>Đánh giá Tác động Môi trường (ĐTM)</b> và chiến lược phát triển xanh.</p>', unsafe_allow_html=True)
 st.markdown("---")
 
 if analyze_button:
@@ -101,38 +153,38 @@ Nội dung dự án cần phân tích:
 {project_text}
 """.format(project_text=project_text)
             
-            with st.spinner("🤖 AI đang tiến hành phân tích ĐTM và đánh giá đa chiều dự án, vui lòng chờ trong giây lát..."):
+            with st.spinner("🤖 Hệ thống AI đang tổng hợp và đánh giá chuyên sâu ĐTM, vui lòng chờ trong giây lát..."):
                 response = model.generate_content(prompt)
                 analysis_result = response.text
             
-            st.success("✨ Phân tích dự án hoàn tất thành công!")
-            st.markdown("### 📊 Báo Cáo Đánh Giá Chi Tiết")
+            st.success("🎉 Phân tích dự án hoàn tất thành công!")
+            st.markdown("### 📊 Báo Cáo Đánh Giá Tác Động Môi Trường")
             
-            # Hiển thị kết quả trong một khung chứa rõ ràng, đẹp mắt
+            # Hiển thị kết quả trong khung viền màu sắc bắt mắt
             with st.container(border=True):
                 st.markdown(analysis_result)
             
         except Exception as e:
             st.error(f"❌ Đã xảy ra lỗi khi gọi Gemini API hoặc xử lý dữ liệu: {e}")
 else:
-    # Màn hình chờ hướng dẫn trực quan sinh động
+    # Màn hình chờ thân thiện với các thẻ card sinh động
     col1, col2 = st.columns(2, gap="medium")
     
     with col1:
         with st.container(border=True):
-            st.markdown("### 💡 Hướng dẫn sử dụng")
+            st.markdown("### 💡 Hướng Dẫn Vận Hành Nhanh")
             st.markdown("""
-            1. **Cung cấp dữ liệu:** Tải lên file tài liệu dự án (.pdf, .docx, .txt) hoặc nhập trực tiếp văn bản mô tả ở thanh bên trái.
-            2. **Chạy phân tích:** Nhấn nút **'Bắt đầu Phân Tích Dự Án'**.
-            3. **Nhận kết quả:** AI sẽ lập tức tổng hợp, đánh giá ĐTM đa chiều và chấm điểm mức độ bền vững.
+            * **Bước 1:** Chọn phương thức tải file tài liệu hoặc nhập văn bản trực tiếp ở thanh bên trái.
+            * **Bước 2:** Nhấn nút **'Kích Hoạt Phân Tích AI'**.
+            * **Bước 3:** Hệ thống tự động xử lý tốc độ cao và cho ra báo cáo ĐTM toàn diện.
             """)
             
     with col2:
         with st.container(border=True):
-            st.markdown("### 🎯 Tiêu chí Đánh giá của AI")
+            st.markdown("### 🎯 Tiêu Chí Đánh Giá Chuyên Sâu")
             st.markdown("""
             * **Tổng quan dự án:** Mục tiêu, quy mô và công nghệ.
-            * **ĐTM chi tiết:** Không khí, nguồn nước, đất đai và hệ sinh thái.
-            * **Giải pháp xanh:** Giảm thiểu tác động xấu và kinh tế tuần hoàn.
-            * **Sustainability Score:** Chấm điểm mức độ thân thiện môi trường từ 1-10.
+            * **ĐTM đa chiều:** Không khí, nguồn nước, đất đai và sinh thái.
+            * **Giải pháp xanh:** Giảm thiểu ô nhiễm và tuần hoàn tài nguyên.
+            * **Sustainability Score:** Chấm điểm mức độ phát triển bền vững từ 1 đến 10.
             """)
