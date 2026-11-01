@@ -79,7 +79,9 @@ if analyze_button:
     else:
         try:
             genai.configure(api_key=active_api_key)
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            
+            # Sử dụng model chuẩn tương thích với phiên bản mới
+            model = genai.GenerativeModel('gemini-2.5-flash')
             
             prompt = f"""
 Bạn là một chuyên gia hàng đầu về Đánh giá Tác động Môi trường (ĐTM) và Phát triển Bền vững. 
