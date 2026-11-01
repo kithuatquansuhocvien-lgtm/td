@@ -116,7 +116,6 @@ if analyze_button:
     else:
         try:
             genai.configure(api_key=api_key)
-            # Sử dụng đúng tên model chuẩn gemini-1.5-flash
             model = genai.GenerativeModel('gemini-1.5-flash')
             
             prompt = """
@@ -157,17 +156,17 @@ else:
     with col1:
         with st.container(border=True):
             st.markdown("### ⚡ Chế Độ Tốc Độ Cao")
-            st.markdown(
-                "* Hệ thống tự động trích xuất các thông số trọng yếu về địa chất và tài liệu kỹ thuật.\n"
-                "* Phản hồi nhanh chóng khi sử dụng nội dung nhập trực tiếp từ bản vẽ hoặc báo cáo."
-            )
+            st.markdown("""
+            * Hệ thống tự động trích xuất các thông số trọng yếu về địa chất và tài liệu kỹ thuật.
+            * Phản hồi nhanh chóng khi sử dụng nội dung nhập trực tiếp từ bản vẽ hoặc báo cáo.
+            """)
             
     with col2:
         with st.container(border=True):
             st.markdown("### 🎯 Tiêu Chí Đánh Giá Chuyên Ngành")
-            st.markdown(
-                "* **Tổng quan dự án & Địa hình**\n"
-                "* **Địa chất & Nền móng** (Độ ổn định tầng đất đá, rủi ro sụt lún, sạt lở)\n"
-                "* **Môi trường & Xã hội** (Không khí, nguồn nước, sinh thái, đời sống dân sinh)\n"
-                "* **Giải pháp kỹ thuật & Bền vững**"
-            )
+            st.markdown("""
+            * **Tổng quan dự án & Địa hình**
+            * **Địa chất & Nền móng** (Độ ổn định tầng đất đá, rủi ro sụt lún, sạt lở)[cite: 10]
+            * **Môi trường & Xã hội** (Không khí, nguồn nước, sinh thái, đời sống dân sinh)[cite: 10]
+            * **Giải pháp kỹ thuật & Bền vững**[cite: 10]
+            """)
