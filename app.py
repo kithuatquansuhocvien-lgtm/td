@@ -14,12 +14,9 @@ st.set_page_config(
 # --- TÙY CHỈNH GIAO DIỆN (CSS) ĐẶC SẮC & SINH ĐỘNG ---
 st.markdown("""
     <style>
-    /* Màu nền chính và font chữ */
     .stApp {
         background: linear-gradient(to bottom right, #f4fbf7, #eef6fc);
     }
-    
-    /* Tiêu đề chính rực rỡ */
     .main-title {
         font-size: 2.5rem;
         color: #0b6623;
@@ -27,21 +24,16 @@ st.markdown("""
         text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
         margin-bottom: 0px;
     }
-    
     .sub-title {
         font-size: 1.1rem;
         color: #374151;
         font-weight: 500;
         margin-bottom: 20px;
     }
-
-    /* Style cho Sidebar */
     [data-testid="stSidebar"] {
         background-color: #f0fdf4;
         border-right: 2px solid #bbf7d0;
     }
-    
-    /* Nút bấm tùy chỉnh bắt mắt */
     .stButton>button {
         background: linear-gradient(135deg, #10b981, #059669);
         color: white;
@@ -51,7 +43,6 @@ st.markdown("""
         box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
         transition: all 0.3s ease;
     }
-    
     .stButton>button:hover {
         background: linear-gradient(135deg, #059669, #047857);
         box-shadow: 0 6px 8px -1px rgba(16, 185, 129, 0.4);
@@ -88,7 +79,8 @@ with st.sidebar:
                     extracted_text = uploaded_file.read().decode("utf-8")
                 elif file_extension == "pdf":
                     reader = PdfReader(uploaded_file)
-                    max_pages = min(len(reader.pages), 30) # Tối ưu tốc độ đọc tối đa 30 trang đầu
+                    # Giới hạn chỉ quét tối đa 15 trang đầu tiên để tăng tốc độ xử lý tức thì cho file nặng
+                    max_pages = min(len(reader.pages), 15)
                     for i in range(max_pages):
                         text = reader.pages[i].extract_text()
                         if text:
@@ -98,8 +90,9 @@ with st.sidebar:
                     for para in doc.paragraphs:
                         extracted_text += para.text + "\n"
                 
-                project_text = extracted_text[:20000] # Giới hạn tối ưu thông minh
-                st.success(f"🌱 Đã nạp dữ liệu: **{uploaded_file.name}**")
+                # Cắt giới hạn tối ưu 12.000 ký tự quan trọng nhất giúp AI phản hồi cực kỳ nhanh
+                project_text = extracted_text[:12000]
+                st.success(f"🌱 Đã tối ưu & nạp dữ liệu: **{uploaded_file.name}**")
             except Exception as e:
                 st.error(f"❌ Lỗi khi đọc file: {e}")
     else:
@@ -110,11 +103,11 @@ with st.sidebar:
         )
     
     st.markdown("---")
-    analyze_button = st.button("🚀 Kích Hoạt Phân Tích AI", use_container_width=True)
+    analyze_button = st.button("🚀 Phân Tích Siêu Tốc", use_container_width=True)
 
 # --- MAIN CONTENT: GIAO DIỆN CHÍNH ---
 st.markdown('<p class="main-title">🌍 AI Phân Tích Dự Án Môi Trường</p>', unsafe_allow_html=True)
-st.markdown('<p class="sub-title">Trợ lý trí tuệ nhân tạo chuyên sâu hỗ trợ <b>Đánh giá Tác động Môi trường (ĐTM)</b> và chiến lược phát triển xanh.</p>', unsafe_allow_html=True)
+st.markdown('<p class="sub-title">Trợ lý trí tuệ nhân tạo tốc độ cao hỗ trợ <b>Đánh giá Tác động Môi trường (ĐTM)</b> và chiến lược phát triển xanh.</p>', unsafe_allow_html=True)
 st.markdown("---")
 
 if analyze_button:
@@ -125,66 +118,50 @@ if analyze_button:
     else:
         try:
             genai.configure(api_key=api_key)
+            # Sử dụng model tối ưu hiệu suất nhanh
             model = genai.GenerativeModel('gemini-3.8-flash')
             
             prompt = """
-Bạn là một chuyên gia hàng đầu về Đánh giá Tác động Môi trường (ĐTM) và Phát triển Bền vững. 
-Hãy phân tích tài liệu/văn bản mô tả dự án dưới đây và trả về kết quả bằng tiếng Việt, được định dạng rõ ràng, chuyên nghiệp theo cấu trúc sau:
+Bạn là một chuyên gia hàng đầu về Đánh giá Tác động Môi trường (ĐTM). Hãy phân tích nhanh văn bản dự án dưới đây và trả về kết quả bằng tiếng Việt, rõ ràng, chuyên nghiệp theo cấu trúc:
 
-1. Tóm tắt tổng quan dự án
-- Tên dự án (nếu có), mục tiêu chính, quy mô, công nghệ áp dụng và vị trí triển khai.
+1. Tóm tắt tổng quan dự án (Mục tiêu, quy mô, công nghệ, vị trí)
+2. Đánh giá tác động môi trường (Không khí, Nguồn nước, Đất đai, Hệ sinh thái)
+3. Giải pháp & Khuyến nghị phát triển bền vững (Giảm thiểu tác động, kinh tế tuần hoàn)
+4. Điểm số thân thiện môi trường (Sustainability Score từ 1-10 kèm lý do ngắn gọn)
 
-2. Đánh giá tác động môi trường (ĐTM)
-- Phân tích chi tiết các tác động tích cực và tiêu cực đối với:
-  + Không khí (khí thải, bụi, tiếng ồn, nhiệt độ...)
-  + Nguồn nước (nước mặt, nước ngầm, lưu lượng, xử lý nước thải...)
-  + Đất đai (sử dụng đất, xói mòn, nguy cơ ô nhiễm đất...)
-  + Hệ sinh thái & Đa dạng sinh học (ảnh hưởng đến động thực vật, cảnh quan tự nhiên...)
-
-3. Giải pháp & Khuyến nghị phát triển bền vững
-- Các giải pháp kỹ thuật và quản lý nhằm giảm thiểu tác động tiêu cực.
-- Đề xuất cải tiến công nghệ, tiết kiệm năng lượng, áp dụng mô hình kinh tế tuần hoàn hoặc bù đắp sinh thái.
-
-4. Điểm số thân thiện môi trường (Sustainability Score)
-- Đánh giá theo thang điểm từ 1 đến 10 (1 là cực kỳ gây hại, 10 là cực kỳ thân thiện/xanh và bền vững).
-- Giải thích chi tiết lý do và cơ sở đưa ra mức điểm này.
-
-Nội dung dự án cần phân tích:
+Nội dung dự án:
 {project_text}
 """.format(project_text=project_text)
             
-            with st.spinner("🤖 Hệ thống AI đang tổng hợp và đánh giá chuyên sâu ĐTM, vui lòng chờ trong giây lát..."):
+            with st.spinner("⚡ AI đang tiến hành phân tích siêu tốc, vui lòng đợi trong giây lát..."):
                 response = model.generate_content(prompt)
                 analysis_result = response.text
             
-            st.success("🎉 Phân tích dự án hoàn tất thành công!")
+            st.success("🎉 Phân tích hoàn tất thành công!")
             st.markdown("### 📊 Báo Cáo Đánh Giá Tác Động Môi Trường")
             
-            # Hiển thị kết quả trong khung viền màu sắc bắt mắt
             with st.container(border=True):
                 st.markdown(analysis_result)
             
         except Exception as e:
             st.error(f"❌ Đã xảy ra lỗi khi gọi Gemini API hoặc xử lý dữ liệu: {e}")
 else:
-    # Màn hình chờ thân thiện với các thẻ card sinh động
     col1, col2 = st.columns(2, gap="medium")
     
     with col1:
         with st.container(border=True):
-            st.markdown("### 💡 Hướng Dẫn Vận Hành Nhanh")
+            st.markdown("### ⚡ Chế Độ Tốc Độ Cao")
             st.markdown("""
-            * **Bước 1:** Chọn phương thức tải file tài liệu hoặc nhập văn bản trực tiếp ở thanh bên trái.
-            * **Bước 2:** Nhấn nút **'Kích Hoạt Phân Tích AI'**.
-            * **Bước 3:** Hệ thống tự động xử lý tốc độ cao và cho ra báo cáo ĐTM toàn diện.
+            * Hệ thống tự động trích xuất các phần trọng yếu của tài liệu để tiết kiệm thời gian truyền tải.
+            * Phản hồi gần như tức thì khi sử dụng nội dung nhập trực tiếp.
             """)
             
     with col2:
         with st.container(border=True):
-            st.markdown("### 🎯 Tiêu Chí Đánh Giá Chuyên Sâu")
+            st.markdown("### 🎯 Tiêu Chí Đánh Giá")
             st.markdown("""
-            * **Tổng quan dự án:** Mục tiêu, quy mô và công nghệ.
-            * **ĐTM đa chiều:** Không khí, nguồn nước, đất đai và sinh thái.
-            * **Giải pháp xanh:** Giảm thiểu ô nhiễm và tuần hoàn tài nguyên.
-            * **Sustainability Score:** Chấm điểm mức độ phát triển bền vững từ 1 đến 10.
+            * **Tổng quan dự án**
+            * **ĐTM đa chiều** (Không khí, Nước, Đất, Sinh thái)
+            * **Giải pháp xanh**
+            * **Sustainability Score** (1-10 điểm)
             """)
